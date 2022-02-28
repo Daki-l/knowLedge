@@ -131,5 +131,28 @@ class Foo {
 let f = new Foo();
 console.log('Symbol.syncIterator()', f[Symbol.asyncIterator]());    // AsyncGenerator {<suspended>}
 
+// 技术上，这个是有Symbol.asyncIterator函数生成的对象 应该可以通过其next()方法陆续返回Promise实例。可以通过显示的调用next()方法返回，也可以隐式地通过一部生成函数返回：
+// 注：Symbil.syncIterator是ES2018规范定义的，因此只有版本非常新的浏览器才能支持它
+class Emitter {
+    constructor(max) {
+        this.max = max;
+        this.asyncIdx = 0;
+    }
+    async * [Symbol.asyncIterator]() {
+        while(this.asyncIdx < this.max) {
+            yield new Promise(resolve => resolve(this.asyncIdx++));
+        }
+    }
+}
+async function asyncCount() {
+    let emitter = new Emitter(3);
+    for await(const x of emitter) {
+        console.log('emitter----x', x);
+    }
+}
 
+asyncCount();  
+// 0
+// 1
+// 2
 })();

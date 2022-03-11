@@ -6,6 +6,11 @@ module.exports = {
     //     path: __dirname + '/dist',
     //     filename: 'bundle.js'
     // },
+    devServer: {
+        open: true,
+        compress: true,
+        port: 9000,
+    },
     module: {
         rules: [{ test: /\.txt$/, use: 'raw-loader' }]
     },
